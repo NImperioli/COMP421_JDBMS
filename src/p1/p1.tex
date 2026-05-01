@@ -1,0 +1,205 @@
+\documentclass[12pt, oneside]{article} 
+\usepackage{amsmath, amsthm, amssymb, calrsfs, wasysym, verbatim, bbm, color, graphics, geometry, multicol}
+
+\usepackage[hidelinks]{hyperref} % Enables hyperlinks without borders
+\usepackage{bookmark} % Optional, improves PDF bookmarks
+
+\geometry{tmargin=.75in, bmargin=.75in, lmargin=.75in, rmargin = .75in}  
+
+\newcommand{\ra}{$\rightarrow$ }
+
+\title{COMP 421 - Database Systems\\
+        \large Project 1: Database Design and Data Modelling}
+\author{Group 99: Luca Mitran, Nicholas Imperioli, Ping-Chieh Tu}
+\date{February 3$^{\text{rd}}$ 2025}
+
+
+\begin{document}
+
+\maketitle
+\begin{center}
+    \large \textbf{Online Distribution Service of Computer Games Database Management}
+\end{center}
+\section{Requirement Analysis}
+\subsection{Introduction}
+
+Today, computer games are not sold only as physical copies. Online distribution services provide a digital platform for purchasing, downloading, and managing games without having a physical copy. Most of them also offer cloud saving and multi-player connectivity. For developers, these platforms reduce their production cost, expand their audience, and also provide features such as community forums and regional pricing.
+\vspace{0.5em}
+\\
+\noindent This ease of access is integral to developers as they have to spend less time worrying about these aspects of development and can put more effort into making an enjoyable gaming experience. For the scope of this project, we will focus on the interaction between the creation of a game and its journey to the hands of our users. This journey consists of features such as wishing for a game, discounts, and the purchasing process for buying said games.
+\vspace{0.5em}
+\\
+\noindent We will act like a platform and focus our interest on the relations between the players and the games, between the developers and their games, and between fellow users. 
+
+\subsection{Database Description}
+
+Entities and attributes:
+\begin{itemize}
+    \item Developer: A developer is someone who creates games. A developer has a name, unique primary key did, and email.
+    \item Publisher: A publisher is someone who publishes the game created by developers. A publisher has a unique primary key pid, name, and email.
+    \item Game: A game must be made by a developer. Each game has a unique gid, rating, release date, and price.
+    \item User: A user is someone who buys the games on our platform. Each user has a unique uid, email, and password.
+    \item BillingInfo: This is a weak entity of a user. It has an address, name, and paymentMethod.
+    \item Transaction: A transaction tracks purchases made by users This is also a weak entity of a user. It has a transid, gid, date, amount, and status.
+    \item Discount: A game can have a discount/be on sale. It is a weak entity that has a startDate, endDate, and percentOff.
+    \item Category: A category defines a game by genre and features. A game must have at least one category but can have multiple. It has a primary key name.
+\end{itemize}
+Relations:
+\begin{itemize}
+    \item MakePublish: A game is made by a developer and published by a publisher. This is a ternary one-many-many relationship as a game can only be made and published by one developer and one publisher but developers and publishers can make and publish multiple games.
+    \item Wish: A user wishes to own a game. This is a many-to-many relationship since a user can wish to have multiple games and a game can be wished by multiple users.
+    \item InCart: A user adds a game to their cart but has yet to checkout. This is a many-to-many relationship since a user can add multiple games to their cart and a game can be added to cart by multiple users.
+    \item Own: A game is owned by a user. This is a many-to-many relationship because a game can be owned by multiple users and a user can own multiple games.
+    \item Buy: A user buys a game through a transaction. This is a ternary many-many-one relationship as a user can buy multiple games but a transaction can only be made by a user purchasing the items in their cart.
+    \item Friend: A user can be friends with other users. This is a many-to-many relationship as a user can be friends of multiple users. It records the status between two users that have a connection.
+    \item Belongs to: A game falls under a category. This is a many-to-many relationship as a game can fall under multiple categories and a category can have multiple games.
+    \item Has: Encapsulate all weak entities with their parents. For example, a user has billing info.
+\end{itemize}
+
+\subsection{Application Description}
+
+% Applicatin description here
+Our application is made to efficiently manage a digital game distribution platform with a focus on secure and optimal data management. To optimize our algorithm, we compile and process data during runtime. This includes user activity statistics, game metrics, and sales data; aggregating these statistics makes it easier to implement features like personalized recommendations as well as discount promotions at certain times. We dynamically perform the algorithms on our platform at scheduled intervals to avoid redundancy.
+\vspace{0.5em}
+\\
+\noindent Preliminary calculations for the system are focused on user security and game management. This includes robust encryption for sensitive info like passwords and billing information and game metrics. We can also use these factors to change how games are presented in the store; by weighting visibility based on rating, release date, and discount status, we can optimize game discovery and recommendations for users. 
+\vspace{0.5em}
+\\
+\noindent The main functions of our system include userLibrary(uid) which returns a user’s owned games (with associated metadata) and calculateDiscount(gid, date) which determines the current price of a game after any promotions or discounts. The system also handles social features like friend relationships through a mutual confirmation system. We base our platform on dynamic processing of all these interconnected forms of data to make user experience more responsive, interactive, and manageable. 
+\vspace{0.5em}
+\\
+\noindent Several other variables managed by the system include: game pricing histories, user purchase patterns, and wishlist statistics. As already stated, securing sensitive data like payment information is very integral to the system. Furthermore, ensuring that there are mechanisms for maintaining accurate records of financial transactions in the system is an important feature for processing refunds and other user initiated requests.
+
+
+\subsection{Creative Description}
+
+Our online game distribution service database design demonstrates sophisticated modeling through several standout features. The system employs a ternary relationship (MakePublish) that realistically captures the complex interaction between games, developers, and publishers in the industry. The design also makes strategic use of weak entities for BillingInfo, Discount, and Transactions, which can elegantly handle time-sensitive and dependent data. The schema includes multiple many-to-many relationships that capture different states of user-game interactions, along with a self-referential relationship for the friend system. There is also a flexible categorization system, implemented through the BelongsTo relationship, that allows games to belong to multiple categories; this is flexible and scalable, allowing expansions in game discovery and organization capabilities. These features create a practical and sophisticated database design that reflects real industry practices while still being simple and expandable.
+
+\subsection{Inspirations}
+
+Web stores like Steam and Epic Games are two store fronts that inspired this database design.
+
+\subsection{Communication and Teamwork}
+
+The work was divvied up into equal parts based on the amount of marks for each section. One member worked on the introduction and database description, one worked on the e/r diagram, and one worked on the application and creative description of the database; However all work was collaborated on. Communication occurred through discord in regular intervals where we communicated necessary changes and feedback. After each part was done, we would ask for each other's input and what needed to be changed. If no changes were needed the work was pushed to the GitHub main branch.
+
+\section{Relation Tables}
+\begin{tabular}{l@{}l}
+    \texttt{Developer(} & \texttt{\underline{did},}\\
+                         & \texttt{name NOT NULL,}\\
+                         & \texttt{email NOT NULL,}\\
+                         & \texttt{phone,}\\
+                         & \texttt{PRIMARY KEY (did))}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Publisher(} & \texttt{\underline{pid},}\\
+                         & \texttt{name NOT NULL,}\\
+                         & \texttt{email NOT NULL,}\\
+                         & \texttt{phone,}\\
+                         & \texttt{PRIMARY KEY (pid))}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Game(} & \texttt{\underline{gid},}\\
+                    & \texttt{date NOT NULL,}\\
+                    & \texttt{rating,}\\
+                    & \texttt{price NOT NULL,}\\
+                    & \texttt{name NOT NULL,}\\
+                    & \texttt{PRIMARY KEY (gid))}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Category(} & \texttt{\underline{name},}\\
+                        & \texttt{PRIMARY KEY (name))}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Users(} & \texttt{\underline{uid},}\\
+                     & \texttt{email NOT NULL,}\\
+                     & \texttt{password NOT NULL,}\\
+                     & \texttt{PRIMARY KEY (uid))}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{BillingInfo(} & \texttt{\underline{uid},}\\
+                           & \texttt{address,}\\
+                           & \texttt{name NOT NULL,}\\
+                           & \texttt{payMethod NOT NULL,}\\
+                           & \texttt{PRIMARY KEY (uid),}\\
+                           & \texttt{FOREIGN KEY (uid) REFERENCES Users)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Transactions(} & \texttt{\underline{tid},}\\
+                            & \texttt{date NOT NULL,}\\
+                            & \texttt{amount NOT NULL,}\\
+                            & \texttt{status NOT NULL,}\\
+                            & \texttt{uid NOT NULL,}\\
+                            & \texttt{PRIMARY KEY (tid),}\\
+                            & \texttt{FOREIGN KEY (uid) REFERENCES Users)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Discount(} & \texttt{\underline{gid}, \underline{startDate},}\\
+                        & \texttt{endDate NOT NULL,}\\
+                        & \texttt{percentOff NOT NULL,}\\
+                        & \texttt{PRIMARY KEY (gid, startDate),}\\
+                        & \texttt{FOREIGN KEY (gid) REFERENCES Game)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{MakePublish(} & \texttt{\underline{gid}, did NOT NULL, pid NOT NULL,}\\
+                           & \texttt{PRIMARY KEY (gid),}\\
+                           & \texttt{FOREIGN KEY (gid) REFERENCES Game,}\\
+                           & \texttt{FOREIGN KEY (did) REFERENCES Developer,}\\
+                           & \texttt{FOREIGN KEY (pid) REFERENCES Publisher)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Wish(} & \texttt{\underline{uid}, \underline{gid},}\\
+                    & \texttt{PRIMARY KEY (uid, gid),}\\
+                    & \texttt{FOREIGN KEY (uid) REFERENCES Users,}\\
+                    & \texttt{FOREIGN KEY (gid) REFERENCES Game)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Own(} & \texttt{\underline{uid}, \underline{gid},}\\
+                   & \texttt{PRIMARY KEY (uid, gid),}\\
+                   & \texttt{FOREIGN KEY (uid) REFERENCES Users,}\\
+                   & \texttt{FOREIGN KEY (gid) REFERENCES Game)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{InCart(} & \texttt{\underline{uid}, \underline{gid},}\\
+                      & \texttt{PRIMARY KEY (uid, gid),}\\
+                      & \texttt{FOREIGN KEY (uid) REFERENCES Users,}\\
+                      & \texttt{FOREIGN KEY (gid) REFERENCES Game)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Friend(} & \texttt{\underline{uid1}, \underline{uid2},}\\
+                      & \texttt{status NOT NULL,}\\
+                      & \texttt{PRIMARY KEY (uid1, uid2),}\\
+                      & \texttt{FOREIGN KEY (uid1) REFERENCES Users,}\\
+                      & \texttt{FOREIGN KEY (uid2) REFERENCES Users)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{BelongsTo(} & \texttt{\underline{gid}, \underline{categoryName},}\\
+                          & \texttt{PRIMARY KEY (gid, categoryName),}\\
+                          & \texttt{FOREIGN KEY (gid) REFERENCES Game,}\\
+                          & \texttt{FOREIGN KEY (categoryName) REFERENCES Category)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Buy(} & \texttt{\underline{uid}, \underline{gid}, \underline{tid},}\\
+                   & \texttt{PRIMARY KEY (uid, gid, tid),}\\
+                   & \texttt{FOREIGN KEY (uid) REFERENCES Users,}\\
+                   & \texttt{FOREIGN KEY (gid) REFERENCES Game,}\\
+                   & \texttt{FOREIGN KEY (tid) REFERENCES Transactions)}
+\end{tabular}
+
+
+\vspace{.25in}
+\end{document}

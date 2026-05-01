@@ -1,0 +1,170 @@
+\documentclass[12pt, oneside]{article} 
+\usepackage{amsmath, amsthm, amssymb, calrsfs, wasysym, verbatim, bbm, color, graphics, geometry, multicol}
+\usepackage[hidelinks]{hyperref} % Enables hyperlinks without borders
+\usepackage{bookmark} % Optional, improves PDF bookmarks
+\usepackage{graphicx}
+
+\geometry{tmargin=.75in, bmargin=.75in, lmargin=.75in, rmargin = .75in}  
+
+\newcommand{\ra}{$\rightarrow$ }
+
+\title{COMP 421 - Database Systems\\
+        \large Project 3: Writing your Application}
+\author{Group 99: Luca Mitran, Nicholas Imperioli, Ping-Chieh Tu}
+\date{March 26$^{\text{th}}$ 2025}
+
+\begin{document}
+
+\maketitle
+\section{Relational Schema}
+\begin{tabular}{l@{}l}
+    \texttt{Developer(} & \texttt{\underline{did},}\\
+                         & \texttt{dname NOT NULL,}\\
+                         & \texttt{demail NOT NULL,}\\
+                         & \texttt{dphone,}\\
+                         & \texttt{PRIMARY KEY (did))}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Publisher(} & \texttt{\underline{pid},}\\
+                         & \texttt{pname NOT NULL,}\\
+                         & \texttt{pemail NOT NULL,}\\
+                         & \texttt{pphone,}\\
+                         & \texttt{PRIMARY KEY (pid))}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Game(} & \texttt{\underline{gid},}\\
+                    & \texttt{date NOT NULL,}\\
+                    & \texttt{rating,}\\
+                    & \texttt{price NOT NULL,}\\
+                    & \texttt{gname NOT NULL,}\\
+                    & \texttt{PRIMARY KEY (gid))}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Category(} & \texttt{\underline{name},}\\
+                        & \texttt{PRIMARY KEY (cname))}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Users(} & \texttt{\underline{uid},}\\
+                     & \texttt{uemail NOT NULL,}\\
+                     & \texttt{password NOT NULL,}\\
+                     & \texttt{PRIMARY KEY (uid))}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{BillingInfo(} & \texttt{\underline{uid},}\\
+                           & \texttt{address,}\\
+                           & \texttt{uname NOT NULL,}\\
+                           & \texttt{payMethod NOT NULL,}\\
+                           & \texttt{PRIMARY KEY (uid),}\\
+                           & \texttt{FOREIGN KEY (uid) REFERENCES Users)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Transactions(} & \texttt{\underline{tid},}\\
+                            & \texttt{date NOT NULL,}\\
+                            & \texttt{amount NOT NULL,}\\
+                            & \texttt{status NOT NULL,}\\
+                            & \texttt{uid NOT NULL,}\\
+                            & \texttt{PRIMARY KEY (tid),}\\
+                            & \texttt{FOREIGN KEY (uid) REFERENCES Users)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Discount(} & \texttt{\underline{gid}, \underline{startDate},}\\
+                        & \texttt{endDate NOT NULL,}\\
+                        & \texttt{percentOff NOT NULL,}\\
+                        & \texttt{PRIMARY KEY (gid, startDate),}\\
+                        & \texttt{FOREIGN KEY (gid) REFERENCES Game)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{MakePublish(} & \texttt{\underline{gid}, did NOT NULL, pid NOT NULL,}\\
+                           & \texttt{PRIMARY KEY (gid),}\\
+                           & \texttt{FOREIGN KEY (gid) REFERENCES Game,}\\
+                           & \texttt{FOREIGN KEY (did) REFERENCES Developer,}\\
+                           & \texttt{FOREIGN KEY (pid) REFERENCES Publisher)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Wish(} & \texttt{\underline{uid}, \underline{gid},}\\
+                    & \texttt{PRIMARY KEY (uid, gid),}\\
+                    & \texttt{FOREIGN KEY (uid) REFERENCES Users,}\\
+                    & \texttt{FOREIGN KEY (gid) REFERENCES Game)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Own(} & \texttt{\underline{uid}, \underline{gid},}\\
+                   & \texttt{PRIMARY KEY (uid, gid),}\\
+                   & \texttt{FOREIGN KEY (uid) REFERENCES Users,}\\
+                   & \texttt{FOREIGN KEY (gid) REFERENCES Game)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{InCart(} & \texttt{\underline{uid}, \underline{gid},}\\
+                      & \texttt{PRIMARY KEY (uid, gid),}\\
+                      & \texttt{FOREIGN KEY (uid) REFERENCES Users,}\\
+                      & \texttt{FOREIGN KEY (gid) REFERENCES Game)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Friend(} & \texttt{\underline{uid1}, \underline{uid2},}\\
+                      & \texttt{status NOT NULL,}\\
+                      & \texttt{PRIMARY KEY (uid1, uid2),}\\
+                      & \texttt{FOREIGN KEY (uid1) REFERENCES Users,}\\
+                      & \texttt{FOREIGN KEY (uid2) REFERENCES Users)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{BelongsTo(} & \texttt{\underline{gid}, \underline{categoryName},}\\
+                          & \texttt{PRIMARY KEY (gid, categoryName),}\\
+                          & \texttt{FOREIGN KEY (gid) REFERENCES Game,}\\
+                          & \texttt{FOREIGN KEY (categoryName) REFERENCES Category)}
+\end{tabular}
+
+\begin{tabular}{l@{}l}
+    \texttt{Buy(} & \texttt{\underline{uid}, \underline{gid}, \underline{tid},}\\
+                   & \texttt{PRIMARY KEY (uid, gid, tid),}\\
+                   & \texttt{FOREIGN KEY (uid) REFERENCES Users,}\\
+                   & \texttt{FOREIGN KEY (gid) REFERENCES Game,}\\
+                   & \texttt{FOREIGN KEY (tid) REFERENCES Transactions)}
+\end{tabular}
+
+\section{Stored Procedure}
+
+% Provide an informal description of what the stored procedure does. Provide a listing of the program code of the stored procedure. Provide a screenshot of using DB2’s command line editor where you execute the stored procedure. Show that the stored procedure has the intended effect.
+
+\section{Application Program}
+% Include the screenshot of the execution of this program. Each of the options should be exercised at least once in your script.
+
+\section{Indexing}
+\subsection{Index 1}
+% (a) Show a script executing the create index statement in DB2 and the result the database returns.
+% (b) Describe which application relevant queries you expect to run faster with this index and why.
+
+\subsection{Index 2}
+% (a) Show a script executing the create index statement in DB2 and the result the database returns.
+% (b) Describe which application relevant queries you expect to run faster with this index and why.
+
+\section{Visualization}
+\subsection{Vis 1}
+% (i) SQL used to generate the data.
+% (ii) A JPG/PNG image of the chart (readable resolution).
+% (iii) An explanation of what the graph represents.
+
+\subsection{Vis 2}
+% (i) SQL used to generate the data.
+% (ii) A JPG/PNG image of the chart (readable resolution).
+% (iii) An explanation of what the graph represents.
+
+\section{Creativity}
+% (a) Describe in informal English what you have done.
+% (b) If you create triggers or stored procedure, follow the guidelines as shown under Q3. If you have a GUI explain in this section the tools used and provide some information about your program structure.
+
+\section{Teamwork}
+% Indicate in one paragraph how you worked together (how many meetings) and how each of the team members contributed to the project deliverable.
+
+\end{document}

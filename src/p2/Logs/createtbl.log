@@ -1,0 +1,75 @@
+(c) Copyright IBM Corporation 1993,2007
+Command Line Processor for DB2 Client 11.5.9.0
+
+You can issue database manager commands and SQL statements from the command 
+prompt. For example:
+    db2 => connect to sample
+    db2 => bind sample.bnd
+
+For general help, type: ?.
+For command help, type: ? command, where command can be
+the first few keywords of a database manager command. For example:
+ ? CATALOG DATABASE for help on the CATALOG DATABASE command
+ ? CATALOG          for help on all of the CATALOG commands.
+
+To exit db2 interactive mode, type QUIT at the command prompt. Outside 
+interactive mode, all commands must be prefixed with 'db2'.
+To list the current command option settings, type LIST COMMAND OPTIONS.
+
+For more detailed help, refer to the Online Reference Manual.
+
+db2 => db2 => CONNECT TO COMP421
+
+   Database Connection Information
+
+ Database server        = DB2/LINUXX8664 11.5.9.0
+ SQL authorization ID   = CS421G99
+ Local database alias   = COMP421
+
+
+db2 => db2 => db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Developer ( did INT NOT NULL, dname VARCHAR(60) NOT NULL, demail VARCHAR(75) NOT NULL UNIQUE, dphone VARCHAR(15), PRIMARY KEY (did) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Publisher ( pid INT NOT NULL, pname VARCHAR(60) NOT NULL, pemail VARCHAR(75) NOT NULL UNIQUE, pphone VARCHAR(15), PRIMARY KEY (pid) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Game ( gid INT NOT NULL, date DATE NOT NULL, rating DECIMAL(3, 2) CHECK (rating >= 0.00 AND rating <= 5.00), price DECIMAL(10, 2) NOT NULL CHECK (price >= 0.00), gname VARCHAR(60) NOT NULL, PRIMARY KEY (gid) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Category ( cname VARCHAR(30) NOT NULL, PRIMARY KEY (cname) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Users ( uid INT NOT NULL, uemail VARCHAR(30) NOT NULL UNIQUE, password VARCHAR(30) NOT NULL, PRIMARY KEY (uid) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE BillingInfo ( uid INT NOT NULL, address VARCHAR(30), uname VARCHAR(20) NOT NULL, payMethod VARCHAR(15) NOT NULL CHECK (payMethod IN ('Credit Card', 'PayPal', 'Debit Card', 'Gift Card')), PRIMARY KEY (uid), FOREIGN KEY (uid) REFERENCES Users(uid) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Transactions ( tid INT NOT NULL, date DATE NOT NULL, amount DECIMAL(10, 2) NOT NULL, status VARCHAR(10) NOT NULL CHECK (status IN ('Failed', 'Pending', 'Completed')), uid INT NOT NULL, PRIMARY KEY (tid), FOREIGN KEY (uid) REFERENCES Users(uid) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Discount ( gid INT NOT NULL, startDate DATE NOT NULL, endDate DATE NOT NULL, percentOff DECIMAL(5, 2) NOT NULL CHECK (percentOff >= 0.00 AND percentOff <= 100.00), PRIMARY KEY (gid, startDate), FOREIGN KEY (gid) REFERENCES Game(gid), CHECK (endDate >= startDate) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE MakePublish ( gid INT NOT NULL, did INT NOT NULL, pid INT NOT NULL, PRIMARY KEY (gid), FOREIGN KEY (gid) REFERENCES Game(gid), FOREIGN KEY (did) REFERENCES Developer(did), FOREIGN KEY (pid) REFERENCES Publisher(pid) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Wish ( uid INT NOT NULL, gid INT NOT NULL, PRIMARY KEY (uid, gid), FOREIGN KEY (uid) REFERENCES Users(uid), FOREIGN KEY (gid) REFERENCES Game(gid) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Own ( uid INT NOT NULL, gid INT NOT NULL, PRIMARY KEY (uid, gid), FOREIGN KEY (uid) REFERENCES Users(uid), FOREIGN KEY (gid) REFERENCES Game(gid) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE InCart ( uid INT NOT NULL, gid INT NOT NULL, PRIMARY KEY (uid, gid), FOREIGN KEY (uid) REFERENCES Users(uid), FOREIGN KEY (gid) REFERENCES Game(gid) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Friend ( uid1 INT NOT NULL, uid2 INT NOT NULL, status VARCHAR(10) NOT NULL CHECK (status IN ('Pending', 'Accepted', 'Blocked', 'Rejected')), PRIMARY KEY (uid1, uid2), FOREIGN KEY (uid1) REFERENCES Users(uid), FOREIGN KEY (uid2) REFERENCES Users(uid), CHECK (uid1 != uid2) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE BelongsTo ( gid INT NOT NULL, categoryName VARCHAR(25) NOT NULL, PRIMARY KEY (gid, categoryName), FOREIGN KEY (gid) REFERENCES Game(gid), FOREIGN KEY (categoryName) REFERENCES Category(cname) )
+DB20000I  The SQL command completed successfully.
+
+db2 => db2 => db2 => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => db2 (cont.) => CREATE TABLE Buy ( uid INT NOT NULL, gid INT NOT NULL, tid INT NOT NULL, PRIMARY KEY (uid, gid, tid), FOREIGN KEY (uid) REFERENCES Users(uid), FOREIGN KEY (gid) REFERENCES Game(gid), FOREIGN KEY (tid) REFERENCES Transactions(tid) )
+DB20000I  The SQL command completed successfully.
+
+db2 => 
